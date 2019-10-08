@@ -1,32 +1,36 @@
-const { Spot, User} = require('../models')
+const { Spot, User } = require('../models')
 
 module.exports = {
     async getAll(req, res) {
         const { tech } = req.query
 
-        const spots = await Spot.find({ techs: tech})
+        const spots = await Spot.find({ techs: tech })
 
         return res.json(spots)
     },
 
-    async create(req, res) { 
+    async create(req, res) {
         const { filename } = req.file
         const { company, techs, price } = req.body
         const { user_id } = req.headers
 
         const user = await User.findById(user_id)
 
-        if(!user) { 
-            return res.status(400).json({ error: 'user does not exists'})
+        if (!user) {
+            return res.status(400).json({ error: 'user does not exists' })
         }
+
+        console.log(req)
 
         const spot = await Spot.create({
             user: user_id,
             thumbnail: filename,
-            company, 
+            company,
             techs: techs.split(',').map(tech => tech.trim()),
             price,
         })
+
+
         return res.json(spot)
     }
 }
