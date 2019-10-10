@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Image, KeyboardAvoidingView, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Image, AsyncStorage, KeyboardAvoidingView, Platform } from 'react-native'
 
 import { GoStackForm, GoStackInput, GoStackButton } from '../../components'
 
@@ -10,14 +10,30 @@ import logo from '../../../assets/logo.png'
 import styles from './login.go-stack.style'
 
 const OS_IOS = Platform.OS === 'ios'
-export function LoginScreen() {
+
+export function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('')
     const [techs, setTechs] = useState('')
 
+    useEffect(() => {
+        AsyncStorage.getItem('user').then(user => {
+            if (user) {
+                navigation.navigate('ListScreen')
+            }
+        })
+    }, [])
+
     async function handleSubmit() {
-        // email, techs
-        console.log(email)
-        console.log(techs)
+        const response = await api.post('/sessions', {
+            email,
+        })
+
+        const { _id } = response.data
+
+        await AsyncStorage.setItem('user', _id)
+        await AsyncStorage.setItem('techs', techs)
+
+        navigation.navigate('ListScreen')
     }
 
     return (

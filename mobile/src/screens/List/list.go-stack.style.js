@@ -6,5 +6,11 @@ export default styles = StyleSheet.create({
         padding: 5,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    logo: {
+        height: 32,
+        resizeMode: 'contain',
+        alignSelf: 'center',
+
     }
 })
